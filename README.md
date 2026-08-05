@@ -98,6 +98,16 @@ would test next — and it, too, is stated so it can fail.
   least-disciplined layer would make H1 "supported" by the very circularity the
   seal exists to expose. My rating is committed in writing before Phase B; whether
   it is the *right* rating is what an independent rater must check.
+- **The pre-registration is not git-verifiable from this repository.** This repo
+  is a single-commit export made *after* both phases were done. The files record
+  that each Phase-A rating was written before its Phase-B classification — and that
+  is true; the working files' timestamps bear it out — but from this repository's
+  history alone you cannot prove the order, and file timestamps are not proof to a
+  determined skeptic. Treat the pre-registration as a **stated protocol, not a
+  timestamp-proven one**. If "pre-registered" is the headline, the ordering is
+  load-bearing, and I would rather say plainly where the public proof stops than
+  let the word carry more than the bytes support. That admission is the same
+  discipline the study is about.
 - **Not novel.** This is a small, honest replication in the space already studied
   by Thung et al. (false negatives, ASE 2014), Liargkovas–Panourgia–Spinellis
   (suppression as an auditable surface, arXiv 2311.07482), Groce et al.
