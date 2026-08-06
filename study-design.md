@@ -97,7 +97,16 @@ the tie-breaker.
 ## 6. Multi-grader protocol
 
 - **≥ 2 independent graders per tool, blind to H1, to the Phase-A scores, and to
-  each other's labels.** Third grader (or consensus meeting, pre-specified)
+  each other's labels.** **Superseded for the two tools already run:** the
+  Bandit-31 and semgrep-30 label sets, and semgrep's sealed Phase-A rating, are
+  published in `data/`, so no grader recruited after 2026-08-06 can be blind to them.
+  Those two corpora are therefore spent for inter-rater work — retracting the files
+  would not restore blinding, and would trade a real disclosure for a fake one. A
+  blinded arm must use a corpus whose labels are unpublished at recruitment time and
+  released only after the grader returns theirs, with that ordering pre-registered.
+  Note also that the existing labels were LLM-produced under the sealed rubric (see
+  the README), so an added human arm measures human-vs-LLM agreement, not
+  human-vs-human. Third grader (or consensus meeting, pre-specified)
   adjudicates disagreements.
 - **Inter-rater reliability:** report Cohen's κ (2 graders) or Fleiss' κ (≥3) per
   tool and pooled. **If κ is low, that is itself the finding** — the taxonomy does
