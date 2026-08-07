@@ -1,0 +1,89 @@
+name: reproducibility
+
+# This repository publishes 61 labels and invites strangers to re-grade them.
+# Two things can silently break that claim, and neither is visible by reading:
+#
+#   1. data/labels.csv drifting from the Markdown it was lifted from, so the
+#      published figures stop describing the published corpus;
+#   2. a nested git repository landing in the worktree and being swept in by a
+#      broad `git add`. On 2026-08-07 a clone of a PRIVATE repository sat in
+#      this tree during an edit; `git add -A` would have published it, and it
+#      held history narrowing an undisclosed vulnerability. It was caught by
+#      reading `git status` before staging, which is not a control.
+#
+# Each check below is followed by a negative control that proves it can fail.
+# A gate that has only been seen to pass has not been tested.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: no nested git repository in the worktree
+        run: |
+          set -eu
+          found=$(find . -mindepth 2 -name .git -not -path './.git/*' -print)
+          if [ -n "$found" ]; then
+            echo "::error::nested git repository in the worktree:"; echo "$found"
+            echo "A clone left here can be committed by a broad 'git add'."
+            exit 1
+          fi
+          # negative control: the check must see one when one exists
+          mkdir -p .ctl/inner/.git && \
+          probe=$(find .ctl -name .git -print) && rm -rf .ctl
+          test -n "$probe" || { echo "::error::nested-repo check cannot detect one"; exit 1; }
+          echo "OK: no nested repository, and the check can find one"
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: labels.csv still matches the Markdown it was lifted from
+        run: |
+          set -eu
+          python3 tools/extract_labels.py
+          git diff --quiet -- data/labels.csv || {
+            echo "::error::data/labels.csv is stale -- re-run tools/extract_labels.py"
+            git --no-pager diff -- data/labels.csv | head -40
+            exit 1; }
+          echo "OK: regenerating leaves labels.csv byte-identical"
+
+      - name: the tables actually come from the CSV
+        run: |
+          set -eu
+          python3 analyze.py > /tmp/before.txt
+          cat /tmp/before.txt
+          # Negative control. If mutating a label does not move the output,
+          # analyze.py is not deriving the figures from the data and the
+          # reproducibility claim in the README is false.
+          cp data/labels.csv /tmp/labels.bak
+          python3 - <<'PY'
+          import pathlib
+          p = pathlib.Path("data/labels.csv")
+          lines = p.read_text().split("\n")
+          lines[1] = lines[1].replace(",GRADING,", ",EXCLUSION,", 1)
+          p.write_text("\n".join(lines))
+          PY
+          python3 analyze.py > /tmp/after.txt
+          if diff -q /tmp/before.txt /tmp/after.txt >/dev/null; then
+            echo "::error::mutating a label did not change the output"
+            exit 1
+          fi
+          cp /tmp/labels.bak data/labels.csv
+          python3 analyze.py > /tmp/restored.txt
+          diff -q /tmp/before.txt /tmp/restored.txt >/dev/null || {
+            echo "::error::restoring the label did not reproduce the output"; exit 1; }
+          echo "OK: the tables follow the data, and restore exactly"
