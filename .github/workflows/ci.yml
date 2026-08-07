@@ -60,6 +60,24 @@ jobs:
             git --no-pager diff -- data/labels.csv | head -40
             exit 1; }
           echo "OK: regenerating leaves labels.csv byte-identical"
+          # Negative control. Byte-identity is trivially true if the extractor
+          # reads the CSV rather than the Markdown -- the check would then be
+          # green forever and catch nothing, a hypothesis that is its own
+          # conclusion. Mutate the SOURCE and require the check to fail.
+          cp data/bandit-classification.md /tmp/bandit.bak
+          sed -i 's/^| 1465 |/| 9999 |/' data/bandit-classification.md
+          python3 tools/extract_labels.py >/dev/null
+          if git diff --quiet -- data/labels.csv; then
+            cp /tmp/bandit.bak data/bandit-classification.md
+            echo "::error::mutating the Markdown did not change labels.csv --"
+            echo "::error::the extractor is not reading the Markdown"
+            exit 1
+          fi
+          cp /tmp/bandit.bak data/bandit-classification.md
+          python3 tools/extract_labels.py >/dev/null
+          git diff --quiet -- data/labels.csv || {
+            echo "::error::restoring the Markdown did not restore labels.csv"; exit 1; }
+          echo "OK: the CSV really is derived from the Markdown"
 
       - name: the tables actually come from the CSV
         run: |
