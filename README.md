@@ -1,6 +1,15 @@
 # Where do a static analyzer's false negatives hide?
 
-### A pre-registered study that refuted its own hypothesis, twice — with all data public for re-grading.
+### An exploratory, sealed-before-classification study that refuted its own
+### hypothesis twice — with all 61 labels public for re-grading.
+
+The ordering was sealed, but this repository cannot prove it: it is a post-hoc
+export, so "pre-registered" appears here as a **stated protocol, not a
+timestamp-proven one**. The labels were produced by an LLM, not by hand. Details
+in Limits, below — they are load-bearing, not boilerplate.
+
+**Licence:** [CC BY 4.0](LICENSE). The labels are published so a stranger can
+re-grade them; until now there was no licence saying they legally could.
 
 I built a small static analyzer, noticed its bugs seemed to cluster in one place,
 and turned that into a falsifiable claim. Then I designed the test so that it
