@@ -1,0 +1,44 @@
+#!/bin/sh
+# Refuse a commit while a nested git repository is in the worktree.
+#
+# WHY THIS EXISTS AND WHY CI IS NOT ENOUGH
+#   2026-08-07: a clone of a PRIVATE repository sat in this worktree during an
+#   edit. `git add -A` would have committed it, and its history names an
+#   organisation under coordinated disclosure. It was caught by reading
+#   `git status` before staging -- attention, not a control.
+#
+#   The reproducibility workflow also checks for nested repositories, but it
+#   runs `on: push`. By the time it goes red the objects are already on
+#   GitHub, and deleting a branch does not remove them: GitHub keeps
+#   `refs/pull/N/head` permanently, which is why the WarmLogic staging repo had
+#   to be deleted and recreated rather than force-pushed. Detection after
+#   publication is not prevention. This hook is the half that prevents.
+#
+# INSTALL (per clone -- .git/hooks is not committed)
+#   cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+#
+# NEGATIVE CONTROL -- run both before trusting it
+#   1. mkdir -p x/.git && git commit --allow-empty -m t   -> expect REFUSED
+#   2. rm -rf x     && git commit --allow-empty -m t      -> expect a commit
+#   A gate that has only been seen to allow has not been tested.
+#
+# `--no-verify` bypasses this, deliberately: the failure being prevented is the
+# accidental one.
+
+set -eu
+
+nested=$(find . -mindepth 2 -name .git -not -path './.git/*' -print 2>/dev/null || true)
+if [ -n "$nested" ]; then
+  printf '%s\n' \
+    'REFUSED: a nested git repository is in this worktree.' \
+    '' \
+    "$nested" \
+    '' \
+    'A clone left here can be swept in by `git add -A`. If it is a clone of a' \
+    'private repository, that publishes it -- and the objects survive a later' \
+    'branch delete via refs/pull/N/head.' \
+    '' \
+    'Move it out of the worktree, or commit explicit paths with --no-verify if' \
+    'you genuinely mean to keep it here.' >&2
+  exit 1
+fi
