@@ -8,6 +8,14 @@ export, so "pre-registered" appears here as a **stated protocol, not a
 timestamp-proven one**. The labels were produced by an LLM, not by hand. Details
 in Limits, below — they are load-bearing, not boilerplate.
 
+**Re-grade it yourself.** The 61 labels are machine-readable in
+[`data/labels.csv`](data/labels.csv) (`tool,issue,category,reason`), and
+`python3 analyze.py` regenerates every figure above from that file — standard
+library, no arguments. Until 2026-08-07 those numbers were hand-transcribed:
+the repository asked strangers to re-grade a corpus while publishing figures
+nothing could recompute. Change a `category` in the CSV and re-run to confirm
+the tables actually follow the data.
+
 **Licence:** [CC BY 4.0](LICENSE). The labels are published so a stranger can
 re-grade them; until now there was no licence saying they legally could.
 
@@ -46,6 +54,7 @@ this form), or **exclusion** (the code was never analyzed).
 
 ```
 Bandit false-negatives:   grading 22 (71%)   pattern-list 7 (23%)   exclusion 2 (6%)
+                          (regenerate: python3 analyze.py)
 My hand-built scanner:    exclusion 7 (54%)  grading 4              pattern-list 2
 ```
 
@@ -78,6 +87,7 @@ Then I classified 30 semgrep false-negatives:
 
 ```
 semgrep false-negatives:   grading 26 (87%)   exclusion 3 (10%)   pattern-list 1 (3%)
+                           (regenerate: python3 analyze.py)
 Sealed Phase-A prediction (H1):  exclusion plurality
 ```
 

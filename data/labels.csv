@@ -1,0 +1,62 @@
+tool,issue,category,reason
+bandit,1465,GRADING,"B501/B113 match `httpx.request` but only 7 `requests` verb helpers, not `requests.request`"
+bandit,1405,GRADING,B704 misses local `Markup` subclasses
+bandit,1399,GRADING,detection of `cmdclass` is evadable by reshaping the call
+bandit,1397,GRADING,B508/B509 argument-shape check too narrow
+bandit,1395,GRADING,"B104 misses `bind(("""", port))` (only matches `""0.0.0.0""`)"
+bandit,1394,GRADING,B501 misses `verify=False` on session/client instances
+bandit,1392,GRADING,"B202 checks `extractall`, misses `extract`"
+bandit,1390,GRADING,"B103 only handles integer-literal mode, misses `stat.*` BinOp"
+bandit,1383,GRADING,B105/6/7 rigid regex misses identifier forms
+bandit,1336,GRADING,B608 regex requires a space after `VALUES`
+bandit,1267,GRADING,B105 misses password as a dict value
+bandit,1171,GRADING,B202 misses `extractall` when qualified name unresolved
+bandit,977,GRADING,"B608 misses `connections[...].cursor().execute(f""..."")`"
+bandit,916,GRADING,B608 misses f-string `FormattedValue` between select/from
+bandit,886,GRADING,B105 misses password inside a connection-string literal
+bandit,656,GRADING,B104/B608 matching regression in 1.6.2
+bandit,639,GRADING,B105 misses password on Py≥3.8 (AST `Constant` vs `Str`) †
+bandit,605,GRADING,"dup of 639/551 (B105, Py3.8) †"
+bandit,551,GRADING,B105 not fired under Py3 (AST) †
+bandit,462,GRADING,B506 misses `from yaml import load; load()` (name resolution)
+bandit,313,GRADING,password check too lenient (misses dict/kw forms)
+bandit,157,GRADING,"shell check matches `True`/`""True""`, misses `shell=1`"
+bandit,1404,PATTERN-LIST,no check for dynamic Jinja2 template-source execution
+bandit,1403,PATTERN-LIST,no check for Flask `send_file` misuse
+bandit,1401,PATTERN-LIST,no SSRF check
+bandit,1339,PATTERN-LIST,no decompression-bomb check
+bandit,1071,PATTERN-LIST,no check for `PKCS1v15` encryption
+bandit,1067,PATTERN-LIST,no check for `Markup` on non-literal content
+bandit,121,PATTERN-LIST,no PyCrypto check (at the time)
+bandit,119,EXCLUSION,internal crash on a node → file not analyzed
+bandit,88,EXCLUSION,no plugins loaded after install → nothing scanned (install-level)
+semgrep,11830,GRADING,Rust arg reuse
+semgrep,11826,GRADING,docker-compose rule needs obsolete `version`
+semgrep,11689,GRADING,`pattern-inside` `...` selection
+semgrep,11662,GRADING,Java crypto rule metavariable
+semgrep,11620,GRADING,C/C++ match across goto
+semgrep,11618,GRADING,Java expr before closure
+semgrep,11586,GRADING,taint through Python `**kwargs`
+semgrep,11493,GRADING,PHP `\unserialize` FQN
+semgrep,11492,GRADING,PHP taint via `&$ref`
+semgrep,11467,GRADING,Rust shadowing taint
+semgrep,11466,GRADING,Rust diesel-taint via refs/ reassignment
+semgrep,11463,GRADING,Rust diesel-taint via refs/ reassignment
+semgrep,11464,GRADING,Rust taint via `match`
+semgrep,11435,GRADING,indirect inheritance
+semgrep,11410,GRADING,symbolic prop in try/except
+semgrep,11408,GRADING,Java case-sensitive algo names
+semgrep,11333,GRADING,Python `match` scrutinee refine
+semgrep,11315,GRADING,Rust `metavariable-type` alias
+semgrep,11314,GRADING,Rust tuple syntax
+semgrep,11274,GRADING,C# catch exception type
+semgrep,11271,GRADING,Rust sqlx hardcoded-password taint
+semgrep,11253,GRADING,Rust hardcoded-auth via var
+semgrep,11252,GRADING,Kotlin `Klass::class.java`
+semgrep,11209,GRADING,`metavariable-comparison` chained ORs
+semgrep,11161,GRADING,Rust namespace+template
+semgrep,11102,GRADING,C# auto getters/setters
+semgrep,11740,EXCLUSION,PHP `readonly` param PartialParsing
+semgrep,11443,EXCLUSION,Python parse errors silently ignored
+semgrep,11287,EXCLUSION,Python empty-string-before- `match` parse error
+semgrep,11825,PATTERN-LIST,`p/docker-compose` has no rule for `user: root`
